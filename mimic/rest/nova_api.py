@@ -432,7 +432,7 @@ class NovaRegion(object):
         """
         Returns current key pairs
         """
-        return json.dumps(self._keypair_collection_for_tenant(tenant_id).json_list())
+        return self._keypair_collection_for_tenant(tenant_id).json_list()
 
     @app.route("/v2/<string:tenant_id>/os-keypairs", methods=['POST'])
     def create_key_pair(self, request, tenant_id):
