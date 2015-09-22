@@ -17,13 +17,8 @@ from twisted.python.urlpath import URLPath
 
 from twisted.plugin import IPlugin
 from twisted.web.http import CREATED, BAD_REQUEST
-
-<<<<<<< HEAD
-from mimic.canned_responses.nova import get_limit, get_networks, get_os_volume_attachments
-=======
 from mimic.canned_responses.nova import get_limit, \
     get_networks, get_os_volume_attachments
->>>>>>> 3c19cd96cda72427e4d1be5f67574171d1f1770f
 from mimic.model.keypair_objects import GlobalKeyPairCollections, KeyPair
 from mimic.rest.mimicapp import MimicApp
 from mimic.catalog import Entry
@@ -431,6 +426,13 @@ class NovaRegion(object):
         Perform the requested action on the server
         """
         return self._region_collection_for_tenant(tenant_id).request_action(request, server_id, self.url)
+
+    @app.route("/v2/<string:tenant_id>/os-keypairs", methods=['GET'])
+    def get_key_pairs(self, request, tenant_id):
+        """
+        Returns current key pairs
+        """
+        return json.dumps(self._keypair_collection_for_tenant(tenant_id).json_list())
 
     @app.route("/v2/<string:tenant_id>/os-keypairs", methods=['POST'])
     def create_key_pair(self, request, tenant_id):
