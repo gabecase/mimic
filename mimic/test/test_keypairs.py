@@ -1,7 +1,6 @@
 """
 Tests for :mod:`nova_api` and :mod:`nova_objects`.
 """
-from IPython import embed
 
 from twisted.trial.unittest import SynchronousTestCase
 
@@ -33,12 +32,12 @@ class KeyPairTests(SynchronousTestCase):
 
     def create_keypair(self, kp_body=None):
         if kp_body is None:
-                kp_body = {
-                    "keypair": {
-                        "name": "setUP_test_lp",
-                        "public_key": "ssh-rsa testkey/"
-                    }
+            kp_body = {
+                "keypair": {
+                    "name": "setUP_test_lp",
+                    "public_key": "ssh-rsa testkey/"
                 }
+            }
 
         resp, body = self.successResultOf(json_request(
             self, self.helper.root, "POST", self.helper.uri + '/os-keypairs',
@@ -62,13 +61,14 @@ class KeyPairTests(SynchronousTestCase):
         resp, body = self.create_keypair(kp_test_body)
 
         self.assertEqual(resp.code, 200)
-        self.assertEqual(body['keypair']['name'], kp_test_body['keypair']['name'])
+        self.assertEqual(body['keypair']['name'],
+                         kp_test_body['keypair']['name'])
 
     def test_list_keypair(self):
         resp, body = self.get_keypairs_list()
         self.assertEqual(resp.code, 200)
-        # embed()
-        # self.assertEqual(len(body["u'keypairs"]), 1)
+        self.assertEqual(body['keypairs'][0]['keypair']
+                         ['name'], self.keypair_name)
 
     def test_delete_keypair(self):
         resp = self.successResultOf(request(
@@ -77,4 +77,5 @@ class KeyPairTests(SynchronousTestCase):
         ))
 
         self.assertEqual(resp.code, 202)
-        # assert server is gone
+        resp, body = self.get_keypairs_list()
+        self.assertTrue(len(body['keypairs']) < 2)

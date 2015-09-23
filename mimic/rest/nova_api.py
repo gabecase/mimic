@@ -446,9 +446,8 @@ class NovaRegion(object):
             return json.dumps(bad_request("Malformed request body", request))
 
         keypair = content["keypair"]
-        name = keypair["name"]
-        pub_key = keypair["public_key"]
-        keypair_from_request = KeyPair(name=name, public_key=pub_key)
+        keypair_from_request = KeyPair(
+            name=keypair["name"], public_key=keypair["public_key"])
         keypair_response = self._keypair_collection_for_tenant(
             tenant_id).create_keypair(keypair=keypair_from_request)
         return json.dumps(keypair_response)
